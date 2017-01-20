@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  number_of_cars: 1
+  total_price: 1
+  user_id: 
+
+two:
+  number_of_cars: 1
+  total_price: 1
+  user_id: 
