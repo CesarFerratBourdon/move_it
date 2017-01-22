@@ -12,32 +12,10 @@ function newRental () {
 
     if (localStorage.getItem("new-rental") !== null) {
 
-    //   var newRental = JSON.parse(localStorage.getItem("new-rental"));
-    //
-    //   var request = $.post('/users/<%=current_user.id%>/createrental', newRental);
-    //
-    //       function onSaveSuccess (response) {
-    //         console.debug('saved!', response);
-    //         localStorage.removeItem("new-rental");
-    //         calcRoute(newRental, response.id);
-    //       }
-    //
-    //       function onSaveFailure (err) {
-    //        console.error(err.responseJSON);
-    //       }
-    //
-    //   console.log(newRental);
-    //
-    //   request.done(onSaveSuccess);
-    //   request.fail(onSaveFailure);
-    //
-    // }else {
-    //     console.debug('No rental added by refreshing webpage...')
-    // };
-    var newRental = JSON.parse(localStorage.getItem("new-rental"));
-    console.log(newRental);
-    calcRoute(newRental);
-  };
+      var newRental = JSON.parse(localStorage.getItem("new-rental"));
+      console.log(newRental);
+      calcRoute(newRental);
+    };
 }
 
 var directionsDisplay;
@@ -78,24 +56,42 @@ function calcRoute(newRental) {
     }, function (response, status) {
         if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
             var distance = response.rows[0].elements[0].distance.text;
-            var duration = response.rows[0].elements[0].duration.text;
-            var dvDistance = document.getElementById("dvDistance");
-           dvDistance.innerHTML = "";
-            dvDistance.innerHTML += "Distance: " + distance + "<br />";
-            dvDistance.innerHTML += "Duration:" + duration;
+            var divDistance = document.getElementById("divDistance");
+           divDistance.innerHTML = "";
+           divDistance.innerHTML += "Distance: " + distance + "<br />";
+           newRental["distance"] = response.rows[0].elements[0].distance.value;
+           saveRental(newRental);
 
         } else {
             alert("Unable to find the distance via road.");
         }
     });
 }
+
+function saveRental(newRental){
+    var request = $.post('/users/<%=current_user.id%>/createrental', newRental);
+
+        function onSaveSuccess (response) {
+          console.debug('saved!', response);
+          localStorage.removeItem("new-rental");
+        }
+
+        function onSaveFailure (err) {
+         console.error(err.responseJSON);
+        }
+
+    request.done(onSaveSuccess);
+    request.fail(onSaveFailure);
+
+}
+
 </script>
 
 <div class="col-lg-4">
 </div>
   <div class="col-lg-5">
     <a href="/users/<%=current_user.id%>/quote" class="btn btn-primary">Get a new quote</a>
-    <a href="/" class="btn btn-primary">Reservations</a>
+    <a href="/" class="btn btn-primary">Quotes</a>
     <a href="/" class="btn btn-primary">Settings</a>
     <a href="/" class="btn btn-primary">Edit profile</a>
   </div>
@@ -107,5 +103,5 @@ function calcRoute(newRental) {
 						<div id="map-canvas"></div>
 					</div>
 			</div>
-      <div id="dvDistance">
+      <div id="divDistance">
       </div>

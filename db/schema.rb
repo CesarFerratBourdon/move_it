@@ -11,19 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170120232240) do
+ActiveRecord::Schema.define(version: 20170122234125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "pricings", force: true do |t|
-    t.integer  "distance"
-    t.integer  "volume_living"
-    t.integer  "volume_basement"
-    t.boolean  "piano"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "rentals", force: true do |t|
     t.integer  "number_of_cars"
@@ -31,6 +22,12 @@ ActiveRecord::Schema.define(version: 20170120232240) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "distance"
+    t.integer  "size_living"
+    t.integer  "size_basement"
+    t.string   "piano"
+    t.string   "city1"
+    t.string   "city2"
   end
 
   add_index "rentals", ["user_id"], name: "index_rentals_on_user_id", using: :btree

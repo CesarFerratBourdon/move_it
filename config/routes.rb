@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
 
   # post '/rentals/form' => 'rentals#form'
-  post '/users/:id/createrental' => 'users#create_rental'
+  post '/users/:id/createrental' => 'rentals#new_rental'
 
 
   get '/users/:id/show' => 'users#show', as: 'dashboard'
