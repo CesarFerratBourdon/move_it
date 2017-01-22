@@ -1,0 +1,180 @@
+
+<script type="text/javascript">
+var location1;
+var location2;
+
+function initialize() {
+
+    var autocomplete1 = new google.maps.places.Autocomplete(
+        (document.getElementById('autocomplete1')),
+        { types: ['geocode'] });
+    var autocomplete2 = new google.maps.places.Autocomplete(
+        (document.getElementById('autocomplete2')),
+        { types: ['geocode'] });
+    google.maps.event.addListener(autocomplete1, 'place_changed', firstPlaceChanged);
+    google.maps.event.addListener(autocomplete2, 'place_changed', secondPlaceChanged);
+
+      function firstPlaceChanged () {
+         var place1 = autocomplete1.getPlace();
+         console.log(place1);
+         lat1 = place1.geometry.location.lat().toString();
+         lng1 = place1.geometry.location.lng().toString();
+         city1 = place1.address_components[0].long_name;
+         country1 = place1.address_components[3].short_name;
+         console.log(city1);
+         console.log(country1);
+
+         $('#lat1').val(lat1);
+         $('#lng1').val(lng1);
+         $('#city1').val(city1);
+         $('#country1').val(country1);
+      };
+      function secondPlaceChanged () {
+         var place2 = autocomplete2.getPlace();
+         console.log(place2);
+         lat2 = place2.geometry.location.lat().toString();
+         lng2 = place2.geometry.location.lng().toString();
+         city2 = place2.address_components[0].long_name;
+         country2 = place2.address_components[3].short_name;
+         console.log(city2);
+         console.log(country2);
+
+         $('#lat2').val(lat2);
+         $('#lng2').val(lng2);
+         $('#city2').val(city2);
+         $('#country2').val(country2);
+      };
+};
+
+$(document).ready(initialize);
+
+</script>
+
+  <div class="container container-table">
+
+    <div class="row vertical-center-row">
+      <div class="col-md-offset-3"><br><br><br><br><br><br><br><br>
+      <h1 class="underline animated fadeInDown"><strong>Get a quote for your move!</strong></h1>
+      <br>
+        <form id="tripForm" class="form-horizontal">
+          <div class="form-group">
+            <label class="col-xs-5 control-label"><strong><i>* Please fill up every fields</i></strong></label>
+        </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label">From: </label>
+                <div class="col-xs-5">
+                    <input type="textarea" id="autocomplete1" class="form-control" placeholder="Enter origin"/>
+                    <input type="hidden" id="lat1" name="lat1"/>
+                    <input type="hidden" id="lng1" name="lng1"/>
+                    <input type="hidden" id="city1" name="city1"/>
+                    <input type="hidden" id="country1" name="country1"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label">To: </label>
+                <div class="col-xs-5">
+                    <input type="text" id="autocomplete2" class="form-control" placeholder="Enter destination"/>
+                    <input type="hidden"  id="lat2" name="lat2"/>
+                    <input type="hidden"  id="lng2" name="lng2"/>
+                    <input type="hidden" id="city2" name="city2"/>
+                    <input type="hidden" id="country2" name="country2"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label">Size of living area: </label>
+                <div class="col-xs-5">
+                    <input type="number"  id="size_living" class="form-control" placeholder="in m2"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label">Size of basement area: </label>
+                <div class="col-xs-5">
+                    <input type="number" id="size_basement" class="form-control" placeholder="in m2"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-3 control-label">Any piano? </label>
+                <div class="col-xs-5">
+                  Yes    <input type="radio" name="piano" value="yes"/>
+                  No    <input type="radio" name="piano" value="no"/>
+                  <input type="hidden" id="piano"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-5 col-xs-offset-3">
+                    <button type="button" class="js-submit btn btn-primary">Calculate!</button>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+    </div>
+
+<div class="modal fade scroll" id="login-signup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Welcome to MoveIT</h4>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form id="tripForm" method="get" action="/users/sign_in" class="form-horizontal">
+          <h4 class="modal-title" id="myModalLabel">Already registered?</h4><br>
+          <button type="submit" class="btn btn-success">Log in</button>
+          </form>
+        </div><br>
+        <div class="container-fluid">
+          <form id="tripForm" method="get" action="/users/sign_up" class="form-horizontal">
+          <h4 class="modal-title" id="myModalLabel">New here?</h4><br>
+          <button type="submit" class="btn btn-primary">Sign up</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+$('input[type=radio]').on('change', function () {
+  var piano = $('input[type=radio]:checked').val();
+  $('#piano').val(piano);
+});
+
+
+$('.js-submit').on('click', function(){
+
+  var new_rental = {
+  origin: $('#origin').val(),
+  destination: $('#destination').val(),
+  lat1: $('#lat1').val(),
+  lng1: $('#lng1').val(),
+  lat2: $('#lat2').val(),
+  lng2: $('#lng2').val(),
+  city1: $('#city1').val(),
+  country1: $('#country1').val(),
+  city2: $('#city2').val(),
+  country2: $('#country2').val(),
+  size_living: $('#size_living').val(),
+  size_basement: $('#size_basement').val(),
+  piano: $('#piano').val(),
+  };
+
+  localStorage.setItem("new-rental", JSON.stringify(new_rental));
+
+<% if user_signed_in? %>
+
+
+ window.location.replace("/users/<%= @user.id %>/show");
+
+<% else %>
+
+  $('#login-signup').modal('toggle');
+
+<% end %>
+
+ }
+);
+
+</script>

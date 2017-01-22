@@ -12,43 +12,47 @@ function newRental () {
 
     if (localStorage.getItem("new-rental") !== null) {
 
-      var newRental = JSON.parse(localStorage.getItem("new-rental"));
-
-      var request = $.post('/users/<%=current_user.id%>/createrental', newRental);
-
-          function onSaveSuccess (response) {
-            console.debug('saved!', response);
-            localStorage.removeItem("new-rental");
-            calcRoute(newRental, response.id);
-          }
-
-          function onSaveFailure (err) {
-           console.error(err.responseJSON);
-          }
-
-      console.log(newRental);
-
-      request.done(onSaveSuccess);
-      request.fail(onSaveFailure);
-
-    }else {
-        console.debug('No rental added by refreshing webpage...')
-    };
-
+    //   var newRental = JSON.parse(localStorage.getItem("new-rental"));
+    //
+    //   var request = $.post('/users/<%=current_user.id%>/createrental', newRental);
+    //
+    //       function onSaveSuccess (response) {
+    //         console.debug('saved!', response);
+    //         localStorage.removeItem("new-rental");
+    //         calcRoute(newRental, response.id);
+    //       }
+    //
+    //       function onSaveFailure (err) {
+    //        console.error(err.responseJSON);
+    //       }
+    //
+    //   console.log(newRental);
+    //
+    //   request.done(onSaveSuccess);
+    //   request.fail(onSaveFailure);
+    //
+    // }else {
+    //     console.debug('No rental added by refreshing webpage...')
+    // };
+    var newRental = JSON.parse(localStorage.getItem("new-rental"));
+    console.log(newRental);
+    calcRoute(newRental);
+  };
 }
 
 var directionsDisplay;
 var directionsService = new google.maps.DirectionsService();
 var map;
 
-function calcRoute(newRental, rentalId) {
-  // $('#warning-message').modal('toggle');
+function calcRoute(newRental) {
+  console.log(newRental.lat1);
+
   directionsDisplay = new google.maps.DirectionsRenderer();
   var chicago = new google.maps.LatLng(41.850033, -87.6500523);
   var mapOptions = {
     zoom:2,
     center: chicago,
-};
+  };
   map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
   directionsDisplay.setMap(map);
 
@@ -62,5 +66,46 @@ function calcRoute(newRental, rentalId) {
       directionsDisplay.setDirections(response);
     }
   });
+
+  var service = new google.maps.DistanceMatrixService();
+    service.getDistanceMatrix({
+        origins: [new google.maps.LatLng(newRental.lat1,newRental.lng1)],
+        destinations: [new google.maps.LatLng(newRental.lat2,newRental.lng2)],
+        travelMode: google.maps.TravelMode.DRIVING,
+        unitSystem: google.maps.UnitSystem.METRIC,
+        avoidHighways: false,
+        avoidTolls: false
+    }, function (response, status) {
+        if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+            var distance = response.rows[0].elements[0].distance.text;
+            var duration = response.rows[0].elements[0].duration.text;
+            var dvDistance = document.getElementById("dvDistance");
+           dvDistance.innerHTML = "";
+            dvDistance.innerHTML += "Distance: " + distance + "<br />";
+            dvDistance.innerHTML += "Duration:" + duration;
+
+        } else {
+            alert("Unable to find the distance via road.");
+        }
+    });
 }
 </script>
+
+<div class="col-lg-4">
+</div>
+  <div class="col-lg-5">
+    <a href="/users/<%=current_user.id%>/quote" class="btn btn-primary">Get a new quote</a>
+    <a href="/" class="btn btn-primary">Reservations</a>
+    <a href="/" class="btn btn-primary">Settings</a>
+    <a href="/" class="btn btn-primary">Edit profile</a>
+  </div>
+  <div class="col-lg-3">
+  </div>
+
+      <div class="panel-body">
+					<div class="container">
+						<div id="map-canvas"></div>
+					</div>
+			</div>
+      <div id="dvDistance">
+      </div>
