@@ -23,7 +23,6 @@ var directionsService = new google.maps.DirectionsService();
 var map;
 
 function calcRoute(newRental) {
-  console.log(newRental.lat1);
 
   directionsDisplay = new google.maps.DirectionsRenderer();
   var chicago = new google.maps.LatLng(41.850033, -87.6500523);
@@ -55,10 +54,10 @@ function calcRoute(newRental) {
         avoidTolls: false
     }, function (response, status) {
         if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
-            var distance = response.rows[0].elements[0].distance.text;
-            var divDistance = document.getElementById("divDistance");
-           divDistance.innerHTML = "";
-           divDistance.innerHTML += "Distance: " + distance + "<br />";
+          //   var distance = response.rows[0].elements[0].distance.text;
+          //   var divDistance = document.getElementById("divDistance");
+          //  divDistance.innerHTML = "";
+          //  divDistance.innerHTML += "Distance: " + distance + "<br />";
            var rental = {}
            rental["distance"] = response.rows[0].elements[0].distance.value;
            rental["piano"] = newRental.piano
@@ -66,7 +65,7 @@ function calcRoute(newRental) {
            rental["city2"] = newRental.city2
            rental["size_living"] = newRental.size_living
            rental["size_basement"] = newRental.size_basement
-          //  saveRental(rental);
+
           calculatePricing(rental);
 
         } else {
@@ -80,7 +79,7 @@ function calculatePricing(rental){
 
         function onSaveSuccess (response) {
           console.debug('Quote calculated!', response);
-          localStorage.removeItem("new-rental");
+          saveRental(response);
         }
 
         function onSaveFailure (err) {
@@ -92,22 +91,27 @@ function calculatePricing(rental){
 
 }
 
-// function saveRental(rental){
-//     var request = $.post('/users/<%=current_user.id%>/createrental', rental);
-//
-//         function onSaveSuccess (response) {
-//           console.debug('saved!', response);
-//           localStorage.removeItem("new-rental");
-//         }
-//
-//         function onSaveFailure (err) {
-//          console.error(err.responseJSON);
-//         }
-//
-//     request.done(onSaveSuccess);
-//     request.fail(onSaveFailure);
-//
-// }
+function saveRental(quote){
+    var request = $.post('/users/<%=current_user.id%>/createrental', quote);
+
+        function onSaveSuccess (response) {
+          console.debug('saved!', response);
+          localStorage.removeItem("new-rental");
+          var divPrice = document.getElementById("divPrice");
+          divPrice.innerHTML = "<br><h2>New Quote</h2><br><br>";
+          divPrice.innerHTML += "<h3>Price: " + response.total_price + " SEK</h3><br>";
+          divPrice.innerHTML += "<h4>" + response.number_of_cars + " Cars are required</h4>";
+          divPrice.innerHTML += "<h4>Total distance: " + response.distance + " km</h4>";
+        }
+
+        function onSaveFailure (err) {
+         console.error(err.responseJSON);
+        }
+
+    request.done(onSaveSuccess);
+    request.fail(onSaveFailure);
+
+}
 
 </script>
 
@@ -123,10 +127,16 @@ function calculatePricing(rental){
 </div>
 
       <div class="row">
-					<div class="container">
-						<div id="map-canvas"></div>
-            <div id="divDistance"></div>
-					</div>
+        <div class="col-lg-4">
+        </div>
+        <div class="col-lg-3">
+          <div id="divPrice"></div>
+        </div>
+        <div class="col-lg-2">
+          <div id="map-canvas"></div>
+        </div>
+        <div class="col-lg-3">
+        </div>
 			</div>
 
       <div class="row">
@@ -136,7 +146,7 @@ function calculatePricing(rental){
           <h2>History of past quotes:</h2><br>
 					<div class="container">
 						<% @rentals.each do |rental| %>
-            <%= rental.city1 %><br>
+          <h3><%= rental.total_price %> SEK from <%= rental.city1 %> to <%= rental.city2 %><br></h3>
             <% end %>
 					</div>
         </div>

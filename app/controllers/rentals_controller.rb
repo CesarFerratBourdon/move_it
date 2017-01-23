@@ -7,7 +7,14 @@ class RentalsController < ApplicationController
   end
 
   def calculate_pricing
-    (distance_pricing * volume_pricing ) + piano_pricing
+    quote = {}
+    quote[:city1] = rental_params["city1"]
+    quote[:city2] = rental_params["city2"]
+    quote[:distance] = ((rental_params["distance"].to_f)/1000).round  #convert distance from m to km
+    quote[:total_price] = (distance_pricing * volume_pricing ) + piano_pricing
+    quote[:number_of_cars] = volume_pricing
+
+    render :json => quote , status: 200
   end
 
   def list_rentals
@@ -17,7 +24,7 @@ class RentalsController < ApplicationController
   private
 
     def distance_pricing
-      distance = rental_params["distance"]/1000.to_i  #convert distance from m to km
+      distance = ((rental_params["distance"].to_f)/1000).round
       if distance < 50
         1000 + 10*(distance)
       elsif distance >= 50 && distance < 100
@@ -43,7 +50,7 @@ class RentalsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def rental_params
-      params.permit(:city1, :city2, :piano, :size_living, :size_basement, :distance)
+      params.permit(:city1, :city2, :piano, :size_living, :size_basement, :distance, :total_price, :number_of_cars)
     end
 
 end
