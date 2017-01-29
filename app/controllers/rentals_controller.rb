@@ -1,25 +1,29 @@
 class RentalsController < ApplicationController
 
   def new_rental
+    @user = current_user
+    gon.id = @user.id
     rental = Rental.create(rental_params)
     current_user.rentals.push(rental)
           render :json => rental, status: 200
   end
 
   def calculate_pricing
+    @user = current_user
+    gon.id = @user.id
     quote = {}
     quote[:city1] = rental_params["city1"]
     quote[:city2] = rental_params["city2"]
     quote[:distance] = ((rental_params["distance"].to_f)/1000).round  #convert distance from m to km
+    quote[:size_living] = rental_params["size_living"]
+    quote[:size_basement] = rental_params["size_basement"]
+    quote[:piano] = rental_params["piano"]
     quote[:total_price] = (distance_pricing * volume_pricing ) + piano_pricing
     quote[:number_of_cars] = volume_pricing
 
     render :json => quote , status: 200
   end
 
-  def list_rentals
-    @rentals = current_user.rentals
-  end
 
   private
 

@@ -4,13 +4,11 @@ Rails.application.routes.draw do
 
   root 'homes#index'
 
-
-  # post '/rentals/form' => 'rentals#form'
   post '/users/:id/createrental' => 'rentals#new_rental'
   get 'users/:id/calculatepricing' => 'rentals#calculate_pricing'
 
 
   get '/users/:id/show' => 'users#show', as: 'dashboard'
-  get '/users/:id/quote' => 'users#quote'
+  get '/users/:id/quote' => 'homes#index'
 
 end
