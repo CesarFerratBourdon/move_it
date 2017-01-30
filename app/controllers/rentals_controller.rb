@@ -1,5 +1,6 @@
 class RentalsController < ApplicationController
 
+
   def new_rental
     @user = current_user
     gon.id = @user.id
@@ -9,8 +10,8 @@ class RentalsController < ApplicationController
   end
 
   def calculate_pricing
-    @user = current_user
-    gon.id = @user.id
+    # @user = current_user
+    # gon.id = @user.id
     quote = {}
     quote[:city1] = rental_params["city1"]
     quote[:city2] = rental_params["city2"]
@@ -25,7 +26,7 @@ class RentalsController < ApplicationController
   end
 
 
-  private
+  # private
 
     def distance_pricing
       distance = ((rental_params["distance"].to_f)/1000).round

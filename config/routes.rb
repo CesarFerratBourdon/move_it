@@ -11,4 +11,6 @@ Rails.application.routes.draw do
   get '/users/:id/show' => 'users#show', as: 'dashboard'
   get '/users/:id/quote' => 'homes#index'
 
+  get '/rentals.json' => 'rentals#calculate_pricing'  #JSON API request
+
 end
