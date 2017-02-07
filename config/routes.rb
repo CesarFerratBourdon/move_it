@@ -5,11 +5,11 @@ Rails.application.routes.draw do
   root 'homes#index'
 
   post '/users/:id/createrental' => 'rentals#new_rental'
-  get 'users/:id/calculatepricing' => 'rentals#calculate_pricing'
+  get '/users/:id/calculatepricing' => 'rentals#calculate_pricing'
 
 
-  get '/users/:id/show' => 'users#show', as: 'dashboard'
-  get '/users/:id/quote' => 'homes#index'
+  get '/dashboard' => 'users#show', :as => 'dashboard'
+  get '/quote' => 'homes#index'
 
   get '/rentals.json' => 'rentals#calculate_pricing'  #JSON API request
 

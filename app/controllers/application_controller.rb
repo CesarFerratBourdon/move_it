@@ -20,35 +20,9 @@ class ApplicationController < ActionController::Base
     #   nil
     # end
 
-   def after_sign_in_path_for(resource)
-        @user = current_user
-        dashboard_path(@user)
-   end
+  def after_sign_in_path_for(resource)
+      dashboard_path
+  end
 
-   def after_sign_up_path_for(resource)
-      @user = current_user
-      dashboard_path(@user)
-   end
-
-
-  private
-
-  #-> Prelang (user_login:devise)
-  # def require_user_signed_in
-  #   unless user_signed_in?
-  #
-  #     # If the user came from a page, we can send them back.  Otherwise, send
-  #     # them to the root path.
-  #     if request.env['HTTP_REFERER']
-  #       fallback_redirect = :back
-  #     elsif defined?(root_path)
-  #       fallback_redirect = root_path
-  #     else
-  #       fallback_redirect = "/"
-  #     end
-  #
-  #     redirect_to fallback_redirect, flash: {error: "You must be signed in to view this page."}
-  #   end
-  # end
 
 end

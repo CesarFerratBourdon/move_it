@@ -92,7 +92,7 @@ function transferInfo () {
   localStorage.setItem("new-rental", JSON.stringify(new_rental));
 
   if (gon.id != null ){
-    window.location.replace("/users/" + gon.id + "/show");
+    window.location.replace("/dashboard");
   } else {
     $('#login-signup').modal('toggle');
   }
